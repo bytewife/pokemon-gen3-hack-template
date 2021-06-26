@@ -8,3 +8,6 @@
 [submodule "poryscript"]
 	path = poryscript
 	url =  https://github.com/huderlem/poryscript
+[submodule "porymap"]
+	path = porymap
+	url = https://github.com/huderlem/porymap
