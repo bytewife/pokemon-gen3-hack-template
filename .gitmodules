@@ -1,0 +1,6 @@
+[submodule "pokeemerald"]
+	path = pokeemerald
+	url = ./pokeemerald/
+[submodule "agbcc"]
+	path = agbcc
+	url = ./agbcc/
