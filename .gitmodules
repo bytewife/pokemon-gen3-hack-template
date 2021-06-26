@@ -1,6 +1,10 @@
 [submodule "pokeemerald"]
 	path = pokeemerald
-	url = ./pokeemerald/
+	url = https://github.com/aith/pokeemerald
+        branch = master
 [submodule "agbcc"]
 	path = agbcc
-	url = ./agbcc/
+	url = https://github.com/pret/agbcc
+[submodule "poryscript"]
+	path = poryscript
+	url =  https://github.com/huderlem/poryscript
