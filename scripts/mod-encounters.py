@@ -23,6 +23,7 @@ Flags:
 --choose-all-maps               Choose all the maps in the FIRST group chosen
 --delete-all-mons               Delete all encounters
 --add-mons                      Add encounters with the format PKMN1-MINLVL1-MAXLVL1,PKMN2-MINLVL2-MAXLVL2
+--format-mons                   Capitalize inputted pokemon names & and prepend SPECIES_ to them (to follow format of rom)
 """
 # --groups <file_path>                 Show encounter groups
 # --
@@ -32,17 +33,25 @@ DEFAULT_GROUP = "gWildMonHeaders"
 
 DEFAULT_ENCOUNTER_RATE = 20
 TERRAIN_GROUPS = ["land_mons", "fishing_mons", "water_mons", "rock_smash_mons"]
+SPECIES_ = "SPECIES_"
 
 TAB1 = "   "
 
 if __name__ == '__main__':
-    argv = sys.argv[1:]
+
+    FORMAT_MONS_FLAG = False
+
+
+    argv = sys.argv[1:] # remove this script from args
 
     # Get DEFAULT_PATH
     file_path = DEFAULT_PATH
     if len(argv) == 0 or argv[0][0] == "-":
         print("No path given: choosing script's DEFAULT_PATH")
-        # if len(argv) > 1: argv = argv[1:]  # Remove from args
+    else:
+        file_path = argv[0]
+        print("Choosing data at "+file_path)
+        argv = argv[1:]  # remove file_path
 
     # Load Json
     def load_json(fp):
@@ -51,7 +60,7 @@ if __name__ == '__main__':
             json_data = json.load(f)
             return json_data
         except FileNotFoundError:
-            print("First argument should be file path. Could not find file path. Exiting")
+            print("Could not find file path. Exiting")
             sys.exit(1)
 
     json_data = load_json(file_path)
@@ -59,7 +68,7 @@ if __name__ == '__main__':
     # Get CLI args
     try:
         char_opts = 'L:l:c:a:h:'
-        long_opts = ['list-maps=', 'choose-all-maps', 'choose-maps=', 'choose-groups=', 'list-groups', "delete-mons", "delete-all-mons", "add-mons=", "save-to="]
+        long_opts = ['list-maps=', 'choose-all-maps', 'choose-maps=', 'choose-groups=', 'list-groups', "delete-mons", "delete-all-mons", "add-mons=", "format-mons", "save-to="]
         opts, args = getopt.getopt(argv, 'l:', long_opts)
     except getopt.GetoptError:
         print("Error processing args")
@@ -161,6 +170,8 @@ if __name__ == '__main__':
                         print("Error: mon data formatted incorrectly. Exiting")
                         sys.exit(1)
                     mon_name, min_lvl, max_lvl, terrain_type = mon_data
+                    if FORMAT_MONS_FLAG:
+                        mon_name = SPECIES_ + mon_name.upper()
                     if terrain_type not in TERRAIN_GROUPS:
                         print("Error: invalid terrain group. Must be in [land_mons, fishing_mons, water_mons, rock_smash_mons]. Exiting")
                     if not max_lvl.isnumeric() or not min_lvl.isnumeric():
@@ -176,6 +187,8 @@ if __name__ == '__main__':
                         "max_level": max_lvl,
                         "species": mon_name
                     })
+        elif opt in ['-a', '--format-mons']:
+            FORMAT_MONS_FLAG = True
         elif opt in ['-s', '--save-to']:
             save_path = arg
             save_file = open(save_path, 'w')
